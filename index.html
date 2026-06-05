@@ -101,19 +101,26 @@ lpic1   █████████ 85%
   `,
 
   contact: `
-Email: hesamirandoost14@gmail.com</a>
-GitHub: <a href="github.com/HesamIrandoost">github.com/HesamIrandoost</a>
-LinkedIn: linkedin.com/in/hesam-irandoost-0a7b58366/
-  `
+Email: <a class="text-blue-400 underline" href="mailto:hesamirandoost14@gmail.com">hesamirandoost14@gmail.com</a><br>
+GitHub: <a class="text-blue-400 underline" href="https://github.com/HesamIrandoost" target="_blank">github.com/HesamIrandoost</a><br>
+LinkedIn: <a class="text-blue-400 underline" href="https://linkedin.com" target="_blank">Profile</a>
+`,
+
 };
 
-function print(text) {
+function print(text, isHTML = false) {
   const div = document.createElement("div");
   div.className = "text-gray-300 whitespace-pre-wrap";
-  div.textContent = text;
+
+  if (isHTML) {
+    div.innerHTML = text;
+  } else {
+    div.textContent = text;
+  }
+
   terminal.appendChild(div);
   terminal.scrollTop = terminal.scrollHeight;
-}
+  }
 
 function runCommand(cmd) {
   const line = document.createElement("div");
@@ -125,11 +132,13 @@ function runCommand(cmd) {
     return;
   }
 
+
   if (commands[cmd]) {
-    print(commands[cmd]);
-  } else {
-    print(`Command not found: ${cmd}`);
-  }
+    const isHTML = cmd === "contact";
+    print(commands[cmd], isHTML);
+    } else {
+      print(`Command not found: ${cmd}`);
+    }
 
   terminal.scrollTop = terminal.scrollHeight;
 }
