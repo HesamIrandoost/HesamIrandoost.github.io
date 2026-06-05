@@ -1,66 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Terminal Portfolio</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ubuntu Terminal Portfolio</title>
 
-  <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.tailwindcss.com"></script>
 
-  <style>
-    body {
-      font-family: monospace;
-    }
-  </style>
+<style>
+  body {
+    background: #300A24;
+    font-family: monospace;
+  }
+
+  .terminal {
+    background: #1e1e1e;
+    box-shadow: 0 0 40px rgba(0,0,0,0.6);
+  }
+
+  .scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 10px;
+  }
+</style>
 </head>
 
-<body class="bg-[#300A24] text-green-400 flex items-center justify-center min-h-screen">
+<body class="flex items-center justify-center min-h-screen">
 
-  <!-- TERMINAL WINDOW -->
-  <div class="w-full max-w-3xl bg-black rounded-lg shadow-2xl overflow-hidden">
+<div class="w-full max-w-4xl terminal rounded-lg overflow-hidden">
 
-    <!-- TOP BAR (Ubuntu style) -->
-    <div class="flex items-center gap-2 px-3 py-2 bg-gray-900">
-      <span class="w-3 h-3 bg-red-500 rounded-full"></span>
-      <span class="w-3 h-3 bg-yellow-500 rounded-full"></span>
-      <span class="w-3 h-3 bg-green-500 rounded-full"></span>
-      <span class="ml-2 text-xs text-gray-400">user@portfolio:~</span>
-    </div>
-
-    <!-- TERMINAL CONTENT -->
-    <div class="p-5 space-y-4 text-sm">
-
-      <p><span class="text-white">user@portfolio:~$</span> whoami</p>
-      <p>Hi, I'm <span class="text-white">Your Name</span> 👋</p>
-
-      <p><span class="text-white">user@portfolio:~$</span> cat about.txt</p>
-      <p class="text-gray-300">
-        Django Developer | Backend Enthusiast | Vue Learner | Calisthenics Athlete
-      </p>
-
-      <p><span class="text-white">user@portfolio:~$</span> ls projects</p>
-      <p class="text-gray-300">
-        blog_app/ &nbsp;&nbsp; ecommerce_api/ &nbsp;&nbsp; portfolio_site/
-      </p>
-
-      <p><span class="text-white">user@portfolio:~$</span> skills --list</p>
-      <p class="text-gray-300">
-        Python, Django, JavaScript, Vue, Tailwind, Git
-      </p>
-
-      <p><span class="text-white">user@portfolio:~$</span> contact</p>
-      <p class="text-gray-300">
-        Email: youremail@gmail.com<br/>
-        GitHub: github.com/yourname
-      </p>
-
-      <p>
-        <span class="text-white">user@portfolio:~$</span>
-        <span class="animate-pulse">█</span>
-      </p>
-
-    </div>
+  <!-- TOP BAR -->
+  <div class="flex items-center gap-2 px-3 py-2 bg-gray-900">
+    <span class="w-3 h-3 bg-red-500 rounded-full"></span>
+    <span class="w-3 h-3 bg-yellow-500 rounded-full"></span>
+    <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+    <span class="ml-3 text-xs text-gray-400">user@ubuntu: ~</span>
   </div>
+
+  <!-- TERMINAL BODY -->
+  <div id="terminal" class="p-4 h-[500px] overflow-y-auto scrollbar text-sm text-green-400 space-y-2">
+
+    <div class="text-gray-300">
+      Welcome to Ubuntu Portfolio Terminal 👋 <br/>
+      Type <span class="text-white">help</span> to see commands
+    </div>
+
+  </div>
+
+  <!-- INPUT -->
+  <div class="flex items-center bg-black px-3 py-2">
+    <span class="text-white">user@portfolio:~$</span>
+    <input id="input"
+      class="bg-transparent flex-1 ml-2 outline-none text-green-400"
+      autofocus
+      autocomplete="off"
+    />
+  </div>
+
+</div>
+
+<script>
+const terminal = document.getElementById("terminal");
+const input = document.getElementById("input");
+
+const commands = {
+  help: `
+Available commands:
+- about
+- skills
+- projects
+- contact
+- clear
+  `,
+
+  about: `
+Hi 👋 I'm Your Name
+
+Backend Developer (Django)
+Frontend (Vue / Tailwind)
+Interested in system design & clean code
+  `,
+
+  skills: `
+Python  ██████████ 90%
+Django  █████████ 85%
+Vue     ████████  80%
+JS      ███████   75%
+Tailwind████████  85%
+  `,
+
+  projects: `
+1. Blog API (Django REST)
+2. Portfolio Terminal UI (this)
+3. Todo App (Vue)
+4. E-commerce Backend
+  `,
+
+  contact: `
+Email: yourmail@gmail.com
+GitHub: github.com/yourname
+LinkedIn: linkedin.com/in/yourname
+  `
+};
+
+function print(text) {
+  const div = document.createElement("div");
+  div.className = "text-gray-300 whitespace-pre-wrap";
+  div.textContent = text;
+  terminal.appendChild(div);
+  terminal.scrollTop = terminal.scrollHeight;
+}
+
+function runCommand(cmd) {
+  const line = document.createElement("div");
+  line.innerHTML = `<span class="text-white">user@portfolio:~$</span> ${cmd}`;
+  terminal.appendChild(line);
+
+  if (cmd === "clear") {
+    terminal.innerHTML = "";
+    return;
+  }
+
+  if (commands[cmd]) {
+    print(commands[cmd]);
+  } else {
+    print(`Command not found: ${cmd}`);
+  }
+
+  terminal.scrollTop = terminal.scrollHeight;
+}
+
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    const cmd = input.value.trim();
+    if (cmd) runCommand(cmd);
+    input.value = "";
+  }
+});
+</script>
 
 </body>
 </html>
