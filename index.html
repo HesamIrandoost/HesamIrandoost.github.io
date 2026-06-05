@@ -38,11 +38,11 @@
     <span class="w-3 h-3 bg-red-500 rounded-full"></span>
     <span class="w-3 h-3 bg-yellow-500 rounded-full"></span>
     <span class="w-3 h-3 bg-green-500 rounded-full"></span>
-    <span class="ml-3 text-xs text-gray-400">HesamIrandoost@ubuntu: ~</span>
+    <span class="ml-3 text-xs text-gray-400">Hesam@ubuntu: ~</span>
   </div>
 
   <!-- TERMINAL BODY -->
-  <div id="terminal" class="p-4 h-[500px] overflow-y-auto scrollbar text-sm text-green-400 space-y-2">
+  <div id="terminal" class="p-4 h-[500px] overflow-y-auto scrollbar text-sm space-y-2">
 
     <div class="text-gray-300">
       Welcome to Ubuntu Portfolio Terminal 👋 <br/>
@@ -53,7 +53,7 @@
 
   <!-- INPUT -->
   <div class="flex items-center bg-black px-3 py-2">
-    <span class="text-white">HesamIrandoost@portfolio:~$</span>
+    <span class="text-white">Hesam@portfolio:~$</span>
     <input id="input"
       class="bg-transparent flex-1 ml-2 outline-none text-green-400"
       autofocus
@@ -78,7 +78,7 @@ Available commands:
   `,
 
   about: `
-Hi 👋 I'm HesamIrandoost
+Hi 👋 I'm Hesam
 
 Backend Developer (Django)
 Frontend (Vue / Tailwind)
@@ -89,13 +89,13 @@ Interested in system design & clean code
 Python  ██████████ 90%
 Django  █████████ 85%
 Vue     ████      40%
-JS      ██        25%
-lpic1   █████████ 85%
+JavaScript ██      25%
+Linux   █████████ 85%
   `,
 
   projects: `
 1. Blog API (Django REST)
-2. Portfolio Terminal UI (this)
+2. Portfolio Terminal UI
 3. Todo App (Vue)
 4. E-commerce Backend
   `,
@@ -104,13 +104,16 @@ lpic1   █████████ 85%
 Email: <a class="text-blue-400 underline" href="mailto:hesamirandoost14@gmail.com">hesamirandoost14@gmail.com</a><br>
 GitHub: <a class="text-blue-400 underline" href="https://github.com/HesamIrandoost" target="_blank">github.com/HesamIrandoost</a><br>
 LinkedIn: <a class="text-blue-400 underline" href="https://linkedin.com" target="_blank">Profile</a>
-`,
-
+`
 };
 
-function print(text, isHTML = false) {
+// چاپ خروجی
+function print(text, isHTML = false, isError = false) {
   const div = document.createElement("div");
-  div.className = "text-gray-300 whitespace-pre-wrap";
+
+  div.className = isError
+    ? "text-red-400 whitespace-pre-wrap"
+    : "text-gray-300 whitespace-pre-wrap";
 
   if (isHTML) {
     div.innerHTML = text;
@@ -119,37 +122,51 @@ function print(text, isHTML = false) {
   }
 
   terminal.appendChild(div);
-  terminal.scrollTop = terminal.scrollHeight;
-  }
+  div.scrollIntoView({ behavior: "smooth" });
+}
 
+// اجرای دستور
 function runCommand(cmd) {
+
+  // نمایش خط تایپ شده
   const line = document.createElement("div");
-  line.innerHTML = `<span class="text-white">HesamIrandoost@portfolio:~$</span> ${cmd}`;
+  line.textContent = `Hesam@portfolio:~$ ${cmd}`;
+  line.className = "text-white";
   terminal.appendChild(line);
 
+  // clear
   if (cmd === "clear") {
-    terminal.innerHTML = "";
+    terminal.innerHTML = `
+      <div class="text-gray-300">
+        Terminal cleared. Type <span class="text-white">help</span>
+      </div>
+    `;
+    input.focus();
     return;
   }
 
-
+  // command exists
   if (commands[cmd]) {
     const isHTML = cmd === "contact";
     print(commands[cmd], isHTML);
-    } else {
-      print(`Command not found: ${cmd}`);
-    }
+  } else {
+    print(`Command not found: ${cmd}`, false, true);
+  }
 
-  terminal.scrollTop = terminal.scrollHeight;
+  input.value = "";
+  input.focus();
 }
 
+// input handler
 input.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     const cmd = input.value.trim();
     if (cmd) runCommand(cmd);
-    input.value = "";
   }
 });
+
+// همیشه فوکوس
+window.addEventListener("click", () => input.focus());
 </script>
 
 </body>
